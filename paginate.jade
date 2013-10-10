@@ -1,0 +1,5 @@
+div
+  ul.pagination
+    li(ng-repeat='page in pages', ng-class='page.c')
+      a(href='#', ng-click='paginate(page.p)', title='{{page.t}}') {{page.l}}
+  div Seite {{page}} von {{pageCount}}. Ergebnisse {{page * options.limit}} - {{(page+1) * options.limit}} von {{count}}
