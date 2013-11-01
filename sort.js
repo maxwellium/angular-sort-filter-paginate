@@ -3,7 +3,7 @@
 
 
 angular.module('SortFilterPaginate.directives')
-.directive('sort', function() {return {
+.directive('sfpSort', function() {return {
 
   templateUrl: '/Public/components/angular-sort-filter-paginate/sort.html',
   restrict: 'E',
@@ -12,10 +12,10 @@ angular.module('SortFilterPaginate.directives')
 
   scope: {
     model     : '=',
-    predicate : '@',
     onSort    : '=',
     type      : '@'
   },
+
   link: function($scope, elem, attrs) {
 
     $scope.direction = 0;
@@ -68,9 +68,7 @@ angular.module('SortFilterPaginate.directives')
 
     };
 
-    $scope.$watch('model.options.sort[\''+
-                  attrs.predicate.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0') +
-                  '\']', sorting);
+    $scope.$watch('model.options.sort[\''+ attrs.predicate + '\']', sorting);
   }
 
 };});

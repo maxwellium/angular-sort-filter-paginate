@@ -9,5 +9,4 @@ angular.module('SortFilterPaginate', [
 angular.module('SortFilterPaginate.directives', []);
 angular.module('SortFilterPaginate.service', []);
 
-
 })();

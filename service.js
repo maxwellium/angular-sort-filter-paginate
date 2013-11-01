@@ -6,26 +6,27 @@ angular.module('SortFilterPaginate.service')
 .factory('SFP', [ '$timeout', function($timeout){
 
   var SFPService = function(Model) {
-    this.Model = Model;
-    this.count = 0;
-    this.options = {
+    this.Model  = Model;
+    this.count  = 0;
+    this.options= {
       skip  : 0,
       limit : 20,
-      sort  : {},
-      filter: {}
+      sort  : {}
     };
-    this.defaultOptions = {};
-    this.throttleDelay  = 500;
-    this.throttling     = false;
-    this.loading        = false;
-    this.results        = [];
+
+    this.defaultParameters= {};
+    this.throttleDelay    = 500;
+    this.throttling       = false;
+    this.loading          = false;
+    this.results          = [];
   };
 
 
   SFPService.prototype.parameters = function(){
     var
+      that = this,
       sort = '',
-      parameters = angular.copy(this.defaultOptions);
+      parameters = angular.copy(this.defaultParameters);
 
     angular.extend(parameters, this.options);
 
@@ -36,12 +37,9 @@ angular.module('SortFilterPaginate.service')
       }
     });
 
-    delete parameters.filter;
-
-    angular.forEach(this.options.filter, function(filter, predicate){
-      if (filter) {
-        parameters['filter['+ predicate +']'] = filter;
-        //TODO: deep object, so filter for gt, in etc become possible
+    angular.forEach(parameters, function(by, filter){
+      if ( (0 === filter.indexOf('filter[')) && ( ('undefined' === typeof by) || ('' === by) ) ){
+        delete parameters[filter];
       }
     });
 
@@ -63,23 +61,30 @@ angular.module('SortFilterPaginate.service')
 
     this.throttling = $timeout( function(){
       that.query();
-      that.throttling = false;
     }, this.throttleDelay );
   };
 
+
   SFPService.prototype.query = function(callback) {
-    var that = this;
+    var
+      that      = this,
+      parameters= this.parameters();
+
     this.loading = true;
     if (this.throttling) {
       $timeout.cancel(this.throttling);
+      this.throttling = false;
     }
-    return this.results = this.Model.query(this.parameters(), function(result, headers){
+
+    this.results = this.Model.query(parameters, function(result, headers){
       that.count = headers('x-count');
       if (typeof callback === 'function') {
         callback.apply(this, arguments);
       }
       that.loading = false;
     });
+
+    return this.results;
   };
 
   return SFPService;
