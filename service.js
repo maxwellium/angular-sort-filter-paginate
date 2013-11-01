@@ -82,6 +82,8 @@ angular.module('SortFilterPaginate.service')
         callback.apply(this, arguments);
       }
       that.loading = false;
+    }, function(){
+      that.loading = false;
     });
 
     return this.results;
