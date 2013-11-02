@@ -1,0 +1,67 @@
+!!! 5
+html(lang='en', ng-app='SFPExample')
+  head
+    title Example usage of SortFilterPaginate
+
+  body(ng-controller='MainCtrl')
+    h1 Example usage of SortFilterPaginate for AngularJS
+
+
+    table
+      thead
+        tr
+          th: sfp-sort(data-model='UserSFP', data-predicate='name') Name
+          th: sfp-sort(data-model='UserSFP', data-predicate='nested.field1') Nested field 1
+          th: sfp-sort(data-model='UserSFP', data-predicate='cs') Case Sensitive
+          th: sfp-sort(data-model='UserSFP', data-predicate='exact') Exact match
+      tbody
+        tr
+          th
+            sfp-filter(data-model='UserSFP', data-predicate='name:$regex', data-type='regexi')
+              input(type='text', ng-model='filter')
+          th
+            sfp-filter(data-model='UserSFP', data-predicate='nested.field1:$regex', data-type='regexi')
+              input(type='text', ng-model='filter')
+          th
+            sfp-filter(data-model='UserSFP', data-predicate='cs:$regex')
+              input(type='text', ng-model='filter')
+          th
+            sfp-filter(data-model='UserSFP', data-predicate='exact')
+              select(ng-model='filter')
+                option(value='') -- None --
+                option(value='abc') abc
+                option(value='acb') acb
+                option(value='bac') bac
+                option(value='bca') bca
+                option(value='cab') cab
+                option(value='cba') cba
+
+        tr(ng-repeat='user in UserSFP.results')
+          td {{user.name}}
+          td {{user.nested.field1}}
+          td {{user.cs}}
+          td {{user.exact}}
+
+    span(ng-show='UserSFP.loading') loading data ...
+
+    sfp-paginate(data-model='UserSFP')
+      div(ng-show='pageCount > 1')
+        button(ng-disabled='page < 1', ng-click='paginate(page -1)') previous
+        button(ng-disabled='page > pageCount -2', ng-click='paginate(page +1)') next
+
+      span Page {{page +1}} of {{pageCount}}. Showing {{pageResults}} Results of {{model.count || 0}}.
+      a(href='#', ng-hide='page < 1'            , ng-click='paginate(0)'            ) first
+      a(href='#', ng-hide='page > pageCount -2' , ng-click='paginate(pageCount -1)' ) last
+
+
+    script(src='/Public/components/angular/angular.min.js')
+    script(src='/Public/components/angular-resource/angular-resource.min.js')
+
+    script(src='/Public/components/angular-sort-filter-paginate/angular-sort-filter-paginate.js')
+    script(src='/Public/components/angular-sort-filter-paginate/sort.js')
+    script(src='/Public/components/angular-sort-filter-paginate/filter.js')
+    script(src='/Public/components/angular-sort-filter-paginate/paginate.js')
+    script(src='/Public/components/angular-sort-filter-paginate/service.js')
+
+    script(src='/Public/app/js/app.js')
+    script(src='/Public/app/js/service.js')
